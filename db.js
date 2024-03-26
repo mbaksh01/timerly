@@ -53,7 +53,7 @@ export function upsertUserScore(username, score) {
     return new Promise((resolve) => {
         db.get(`SELECT username, score FROM Score WHERE username = '${username}'`, (err, row) => {
             if (row) {
-                db.run(`UPDATE SCORE SET score = score + ${score}, lastUpdatedDateTimeUTC = '${new Date().toISOString()}'`);
+                db.run(`UPDATE SCORE SET score = score + ${score}, lastUpdatedDateTimeUTC = '${new Date().toISOString()}' WHERE username = '${username}'`);
             } else {
                 db.run(`INSERT INTO Score (username, score, lastUpdatedDateTimeUTC) VALUES ('${username}', 1, '${new Date().toISOString()}')`);
             }
