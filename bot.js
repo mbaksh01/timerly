@@ -41,6 +41,14 @@ client.on('messageCreate', async message => {
         await upsertUserScore(message.author.tag, points);
         await markTimeAsTaken(formattedTime);
         await message.react('✅');
+
+        if (points === 1) {
+            await message.react('1️⃣');
+        } else if (points === 2) { 
+            await message.react('2️⃣');
+        } else if (points === 3) {
+            await message.react('3️⃣')
+        }
     }
 });
 
