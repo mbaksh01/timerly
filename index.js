@@ -1,49 +1,9 @@
 import 'dotenv/config'
 import { init as dbInit } from './db.js';
 import { init as botInit } from './bot.js';
-import express from 'express';
-import { VerifyDiscordRequest } from './utils.js';
-import {
-    InteractionType,
-    InteractionResponseType,
-
-} from 'discord-interactions';
-import { getLeaderboardEmbed } from './commands/leaderboard.js';
 
 dbInit();
 botInit();
-
-const app = express();
-const port = process.env.PORT || 3000;
-
-app.use(express.json({ verify: VerifyDiscordRequest(process.env.PUBLIC_KEY) }));
-
-app.post('/interactions', async function (req, res) {
-    const { type, data } = req.body;
-
-    if (type === InteractionType.PING) {
-        return res.send({ type: InteractionResponseType.PONG });
-    }
-
-    if (type === InteractionType.APPLICATION_COMMAND) {
-        const { name } = data;
-
-        if (name === 'leaderboard') {
-            return res.send({
-                type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-                data: {
-                    embeds: [
-                        await getLeaderboardEmbed()
-                    ]
-                },
-            });
-        }
-    }
-});
-  
-app.listen(port, () => {
-    console.log('Listening on port', port);
-});
 
 // console.log("00:00 = " + checkTime({ date: new Date(2024, 2, 1, 0, 0, 0, 0) }));
 // console.log("01:01 = " + checkTime({ date: new Date(2024, 2, 1, 1, 1, 0, 0) }));

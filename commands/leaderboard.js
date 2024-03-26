@@ -27,5 +27,5 @@ export async function getLeaderboardEmbed() {
             }
         ));
 
-    return leaderboardEmbed.data;
+    return leaderboardEmbed;
 }

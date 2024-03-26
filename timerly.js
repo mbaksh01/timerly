@@ -1,13 +1,7 @@
 export function checkTime(dateTimeProvider) {
     const currentTime = dateTimeProvider.date;
-    const curentHour = currentTime.getHours().toLocaleString("en-US", { 
-        minimumIntegerDigits: 2,
-        useGrouping: false
-    });
-    const currentMins = currentTime.getMinutes().toLocaleString("en-US", { 
-        minimumIntegerDigits: 2,
-        useGrouping: false
-    });
+    const curentHour = convertToDoubleDigits(currentTime.getHours());
+    const currentMins = convertToDoubleDigits(currentTime.getMinutes());
 
     let points = 0;
     let pointsSet = false;
@@ -43,5 +37,12 @@ export function checkTime(dateTimeProvider) {
 }
 
 export function formatAsTimeTaken(date) {
-    return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} - ${date.getHours()}:${date.getMinutes()}`;;
+    return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} - ${convertToDoubleDigits(date.getHours())}:${convertToDoubleDigits(date.getMinutes())}`;;
+}
+
+function convertToDoubleDigits(number) {
+    return number.toLocaleString("en-US", { 
+        minimumIntegerDigits: 2,
+        useGrouping: false
+    });
 }
