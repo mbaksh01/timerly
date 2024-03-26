@@ -13,7 +13,7 @@ client.on('messageCreate', async message => {
         return;
     }
 
-    if (message.content.length !== 4 || !parseInt(message.content)) {
+    if (message.content.length !== 4 || isNaN(parseInt(message.content))) {
         return;
     }
 
