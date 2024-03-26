@@ -5,9 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node index.js",
+    "start": "node src/index.js",
     "test": "jasmine",
-    "dev": "nodemon app.js",
+    "dev": "nodemon src/index.js",
     "register": "node commands.js"
   },
   "author": "",
