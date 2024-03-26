@@ -55,7 +55,7 @@ export function upsertUserScore(username, score) {
             if (row) {
                 db.run(`UPDATE SCORE SET score = score + ${score}, lastUpdatedDateTimeUTC = '${new Date().toISOString()}' WHERE username = '${username}'`);
             } else {
-                db.run(`INSERT INTO Score (username, score, lastUpdatedDateTimeUTC) VALUES ('${username}', 1, '${new Date().toISOString()}')`);
+                db.run(`INSERT INTO Score (username, score, lastUpdatedDateTimeUTC) VALUES ('${username}', ${score}, '${new Date().toISOString()}')`);
             }
             resolve();
         });
