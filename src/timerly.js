@@ -37,7 +37,12 @@ export function checkTime(dateTimeProvider) {
 }
 
 export function formatAsTimeTaken(date) {
-    return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} - ${convertToDoubleDigits(date.getHours())}:${convertToDoubleDigits(date.getMinutes())}`;;
+    return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} - ${formatLocalStringTime(date)}`;;
+}
+
+function formatLocalStringTime(time) {
+    let parts = time.toLocaleTimeString('en-GB').split(':');
+    return `${parts[0]}:${parts[1]}`;
 }
 
 function convertToDoubleDigits(number) {
