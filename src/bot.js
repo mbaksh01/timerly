@@ -23,13 +23,19 @@ client.on('messageCreate', async message => {
     const messageFomattedTime =
         `${message.content[0]}${message.content[1]}:${message.content[2]}${message.content[3]}`;
 
+    console.log(`Timestamp of discord message: ${messageDate}`);
+    console.log(`Timestamp of discord message fomatted for internal use: ${formattedTime}`);
+    console.log(`Content of message formatted as time: ${messageFomattedTime}`);
+
     if (formattedTime.includes(messageFomattedTime) === false) {
         await message.react('❌');
+        console.log('Rejected due to message content not including current time.');
         return;
     }
 
     if (await isTimeTaken(formattedTime)) {
         await message.react('❌');
+        console.log('Rejected due to time already existing in the db.');
         return;
     }
 
@@ -37,6 +43,7 @@ client.on('messageCreate', async message => {
 
     if (points === 0) {
         await message.react('❌');
+        console.log('Rejected due to points equaling 0.');
     } else {
         await upsertUserScore(message.author.tag, points);
         await markTimeAsTaken(formattedTime);
