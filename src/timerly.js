@@ -40,6 +40,18 @@ export function formatAsTimeTaken(date) {
     return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} - ${formatLocalStringTime(date)}`;;
 }
 
+export function sortScores(scores) {
+    return scores.sort((a, b) => {
+        const scoreDiff = b.score - a.score;
+
+        if (scoreDiff) {
+            return scoreDiff;
+        }
+
+        return new Date(a.lastUpdatedDateTimeUTC) - new Date(b.lastUpdatedDateTimeUTC);
+    });
+}
+
 function formatLocalStringTime(time) {
     let parts = time.toLocaleTimeString('en-GB', { timeZone: 'Europe/London' }).split(':');
     console.log(`To local time string: ${parts}`);

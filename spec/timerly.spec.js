@@ -1,4 +1,4 @@
-import { checkTime, formatAsTimeTaken } from "../src/timerly.js";
+import { checkTime, formatAsTimeTaken, sortScores } from "../src/timerly.js";
 
 describe('Timerly Business Logic', () => {
     let timePointDict = [
@@ -59,6 +59,29 @@ describe('Timerly Business Logic', () => {
         });
     }
 
+    it(`sortScores_Should_Order_By_Points`, () => {
+        let scores = [
+            { score: 1, lastUpdatedDateTimeUTC: new Date() },
+            { score: 2, lastUpdatedDateTimeUTC: new Date() }
+        ];
+
+        scores = sortScores(scores);
+
+        expect(scores[0].score).toBe(2);
+        expect(scores[1].score).toBe(1);
+    });
+
+    it(`sortScores_Should_Order_By_Time_When_Scores_Are_Equal`, () => {
+        let scores = [
+            { id: 1, score: 2, lastUpdatedDateTimeUTC: new Date(2024, 2, 1, 0, 0, 0, 0) },
+            { id: 2, score: 2, lastUpdatedDateTimeUTC: new Date(2024, 2, 1, 1, 0, 0, 0) }
+        ];
+
+        scores = sortScores(scores);
+
+        expect(scores[0].id).toBe(1);
+        expect(scores[1].id).toBe(2);
+    });
 });
 
 function getTime(date) {

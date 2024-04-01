@@ -1,22 +1,14 @@
 import { EmbedBuilder } from "discord.js";
 import { getAllScores } from "../db.js";
+import { sortScores } from "../timerly.js";
 
 export async function getLeaderboardEmbed() {
-    const scores = await getAllScores();
+    const scores = sortScores(await getAllScores());
 
     const leaderboardEmbed = new EmbedBuilder()
         .setColor(0xe47377)
         .setTitle('Leaderboard')
         .addFields(...scores
-            .sort((a, b) => {
-                let scoreDiff = a.score - b.score;
-
-                if (scoreDiff) {
-                    return scoreDiff;
-                }
-
-                return new Date(a.lastUpdatedDateTimeUTC) - new Date(b.lastUpdatedDateTimeUTC);
-            })
             .map((score, index) => {
                 let prefix = '';
 
