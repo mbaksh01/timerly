@@ -41,7 +41,8 @@ export function formatAsTimeTaken(date) {
 }
 
 function formatLocalStringTime(time) {
-    let parts = time.toLocaleTimeString('en-GB').split(':');
+    let parts = time.toLocaleTimeString('en-GB', { timeZone: 'Europe/London' }).split(':');
+    console.log(`To local time string: ${parts}`);
     return `${parts[0]}:${parts[1]}`;
 }
 
