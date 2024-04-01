@@ -1,7 +1,8 @@
 export function checkTime(dateTimeProvider) {
     const currentTime = dateTimeProvider.date;
-    const curentHour = convertToDoubleDigits(currentTime.getHours());
-    const currentMins = convertToDoubleDigits(currentTime.getMinutes());
+    const timeParts = getLocalTime(currentTime);
+    const curentHour = timeParts[0];
+    const currentMins = timeParts[1];
 
     let points = 0;
     let pointsSet = false;
@@ -53,9 +54,14 @@ export function sortScores(scores) {
 }
 
 function formatLocalStringTime(time) {
-    let parts = time.toLocaleTimeString('en-GB', { timeZone: 'Europe/London' }).split(':');
-    console.log(`To local time string: ${parts}`);
+    let parts = getLocalTime(time);
     return `${parts[0]}:${parts[1]}`;
+}
+
+function getLocalTime(time) {
+    return time
+        .toLocaleTimeString('en-GB', { timeZone: 'Europe/London' })
+        .split(':');
 }
 
 function convertToDoubleDigits(number) {

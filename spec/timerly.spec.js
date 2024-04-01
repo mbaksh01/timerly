@@ -45,14 +45,19 @@ describe('Timerly Business Logic', () => {
     for (let i = 0; i < timePointDict.length; i++) {
         const formattedTime = getTime(timePointDict[i][0]);
         const expectedPoints = timePointDict[i][1];
-        
-        it (`checkTime_Should_Return_${expectedPoints}_Point_For_Time_${formattedTime}`, () => {
+        const title = `checkTime_Should_Return_${expectedPoints}_Point_For_Time_${formattedTime}`;
+
+        it (title, () => {
+            console.log(title);
+            
             const points = checkTime({ date: timePointDict[i][0] });
     
             expect(points).toEqual(expectedPoints);
         });
 
         it(`formatAsTimeTaken_Should_Return_Fomatted_Time`, () => {
+            console.log('formatAsTimeTaken_Should_Return_Fomatted_Time');
+
             const acrualFormattedTime = formatAsTimeTaken(timePointDict[i][0]);
 
             expect(acrualFormattedTime).toBe(`2024/3/1 - ${getTime(timePointDict[i][0])}`);
@@ -60,6 +65,8 @@ describe('Timerly Business Logic', () => {
     }
 
     it(`sortScores_Should_Order_By_Points`, () => {
+        console.log('sortScores_Should_Order_By_Points');
+
         let scores = [
             { score: 1, lastUpdatedDateTimeUTC: new Date() },
             { score: 2, lastUpdatedDateTimeUTC: new Date() }
@@ -72,6 +79,8 @@ describe('Timerly Business Logic', () => {
     });
 
     it(`sortScores_Should_Order_By_Time_When_Scores_Are_Equal`, () => {
+        console.log('sortScores_Should_Order_By_Time_When_Scores_Are_Equal');
+
         let scores = [
             { id: 1, score: 2, lastUpdatedDateTimeUTC: new Date(2024, 2, 1, 0, 0, 0, 0) },
             { id: 2, score: 2, lastUpdatedDateTimeUTC: new Date(2024, 2, 1, 1, 0, 0, 0) }
