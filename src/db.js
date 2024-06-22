@@ -1,49 +1,68 @@
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
-const sqlite3 = require('sqlite3');
+const sql = require('mssql');
+
+const sqlConfig = {
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  server: process.env.DB_ADDRESS,
+  pool: {
+    max: 10,
+    min: 0,
+    idleTimeoutMillis: 30000
+  },
+  options: {
+    encrypt: true,
+    trustServerCertificate: true
+  }
+}
 
 let db;
 
-export function init() {
-    db = new sqlite3.Database('./db/timerly.db', sqlite3.OPEN_READWRITE, (err) => {
-        if (err) {
-            console.error(err);
-        } else {
-            console.log('Connected to database.');
-        }
-    });
+export async function init() {
+    try {
+        await sql.connect(sqlConfig);
+        console.log(`Connected to database ${sqlConfig.database} with user ${sqlConfig.user}.`);
+    } catch (error) {
+        console.error(error);
+    }
     
-    db.serialize(() => {
-        db.run(`CREATE TABLE IF NOT EXISTS
+    sql.query(`
+        IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Score' AND xtype='U')
+            CREATE TABLE
                 Score (
                     username varchar(50) PRIMARY KEY,
                     score INTEGER,
-                    lastUpdatedDateTimeUTC TEXT)`,
-                    (err) => {
-                        if (err) {
-                            console.error(err.message);
-                        }
-                    });
-        db.run(`CREATE TABLE IF NOT EXISTS
-                TakenTime (time varchar(20) UNIQUE)`,
-                (err) => {
-                    if (err) {
-                        console.error(err.message);
-                    }
-                });
-    });
+                    lastUpdatedDateTimeUTC DATETIME)`,
+        (err) => {
+            if (err) {
+                console.error(err.message);
+            }
+        });
+
+    sql.query(`
+        IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='TakenTime' AND xtype='U')
+            CREATE TABLE
+                TakenTime (
+                    time varchar(20) UNIQUE)`,
+        (err) => {
+            if (err) {
+                console.error(err.message);
+            }
+        });
 }
 
 export function getScoreByUsername(username) {
     return new Promise((resolve) => {
-        db.get(`SELECT score
+        sql.query(`SELECT score
                 FROM Score
                 WHERE username = '${username}'`,
-                (err, row) => {
+                (err, result) => {
                     if (err) {
                         resolve(-1);
                     } else {
-                        resolve(row.score);
+                        resolve(result.recordset[0].score);
                     }
                 });
     });
@@ -51,9 +70,9 @@ export function getScoreByUsername(username) {
 
 export function upsertUserScore(username, score) {
     return new Promise((resolve) => {
-        db.get(`SELECT username, score FROM Score WHERE username = '${username}'`, (err, row) => {
-            if (row) {
-                db.run(`UPDATE SCORE SET score = score + ${score}, lastUpdatedDateTimeUTC = '${new Date().toISOString()}' WHERE username = '${username}'`);
+        sql.query(`SELECT username, score FROM Score WHERE username = '${username}'`, (err, result) => {
+            if (result) {
+                db.run(`UPDATE Score SET score = score + ${score}, lastUpdatedDateTimeUTC = '${new Date().toISOString()}' WHERE username = '${username}'`);
             } else {
                 db.run(`INSERT INTO Score (username, score, lastUpdatedDateTimeUTC) VALUES ('${username}', ${score}, '${new Date().toISOString()}')`);
             }
@@ -64,14 +83,14 @@ export function upsertUserScore(username, score) {
 
 export function markTimeAsTaken(time) {
     return new Promise((resolve) => {
-        db.run(`INSERT INTO TakenTime (time) VALUES ('${time}')`, resolve);
+        sql.query(`INSERT INTO TakenTime (time) VALUES ('${time}')`, resolve);
     });
 }
 
 export function isTimeTaken(time) {
     return new Promise((resolve) => {
-        db.get(`SELECT time FROM TakenTime WHERE time = '${time}'`, (err, row) => {
-            if (row !== undefined) {
+        sql.query(`SELECT 1 as taken FROM TakenTime WHERE time = '${time}'`, (err, result) => {
+            if (result.recordset[0].taken === 1) {
                 resolve(true);
             } else {
                 resolve(false);
@@ -82,8 +101,8 @@ export function isTimeTaken(time) {
 
 export function getAllScores() {
     return new Promise((resolve) => {
-        db.all(`SELECT username, score, lastUpdatedDateTimeUTC FROM Score`, (err, rows) => {
-            resolve(rows);
+        sql.query(`SELECT username, score, lastUpdatedDateTimeUTC FROM Score`, (err, result) => {
+            resolve(result.recordset);
         })
     });
 }

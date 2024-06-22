@@ -16,9 +16,8 @@
     "discord-interactions": "^3.4.0",
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.5",
-    "express": "^4.19.1",
-    "node-fetch": "^3.3.2",
-    "sqlite3": "^5.1.7"
+    "mssql": "^11.0.0",
+    "node-fetch": "^3.3.2"
   },
   "devDependencies": {
     "jasmine": "^5.1.0",
