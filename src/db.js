@@ -71,10 +71,10 @@ export function getScoreByUsername(username) {
 export function upsertUserScore(username, score) {
     return new Promise((resolve) => {
         sql.query(`SELECT username, score FROM Score WHERE username = '${username}'`, (err, result) => {
-            if (result) {
-                db.run(`UPDATE Score SET score = score + ${score}, lastUpdatedDateTimeUTC = '${new Date().toISOString()}' WHERE username = '${username}'`);
+            if (result.recordset.length > 0) {
+                sql.query(`UPDATE Score SET score = score + ${score}, lastUpdatedDateTimeUTC = '${new Date().toISOString()}' WHERE username = '${username}'`);
             } else {
-                db.run(`INSERT INTO Score (username, score, lastUpdatedDateTimeUTC) VALUES ('${username}', ${score}, '${new Date().toISOString()}')`);
+                sql.query(`INSERT INTO Score (username, score, lastUpdatedDateTimeUTC) VALUES ('${username}', ${score}, '${new Date().toISOString()}')`);
             }
             resolve();
         });
