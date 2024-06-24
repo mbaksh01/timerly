@@ -90,7 +90,7 @@ export function markTimeAsTaken(time) {
 export function isTimeTaken(time) {
     return new Promise((resolve) => {
         sql.query(`SELECT 1 as taken FROM TakenTime WHERE time = '${time}'`, (err, result) => {
-            if (result.recordset[0].taken === 1) {
+            if (result.recordset.length > 0) {
                 resolve(true);
             } else {
                 resolve(false);
