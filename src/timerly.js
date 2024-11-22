@@ -29,7 +29,7 @@ export function checkTime(dateTimeProvider) {
 
     if (pointsSet === false) {
         const fullTime = `${curentHour}:${currentMins}`;
-        if (fullTime === '12:34' || fullTime === '01:23') {
+        if (fullTime === '01:23' || fullTime === '12:34' || fullTime === '23:45') {
             points = 3;
         }
     }
